@@ -27,12 +27,6 @@ CHUNKSIZE = 1048
 class HpmClient:
     def __init__(self, server):
         self.server = server
-        self.spinner = spinning_cursor()
-
-    def spin_cursor(self):
-        sys.stdout.write(next(self.spinner))
-        sys.stdout.flush()
-        sys.stdout.write('\b')
 
     def list_files(self, filter_term):
         pass
@@ -105,16 +99,6 @@ class HpmClient:
         archive = self.package_file(file_path)
         basename = ntpath.basename(archive)
         basename_bytes = basename.encode("utf8")
-        # First take: 
-        # - SHA256 of package
-        # - Send SHA256 to server
-        # - Server checks available hashes
-        # - If finds matching hash, responds saying thx but no thx, already got it
-        # - Otherwise says OK, send it to me
-        # - Server saves file as {FILE}-{SHA26:8}-{DATE}.tar.gz.link
-        # - Server verifies that SHA256 matches what the client said
-        # - If it does, mv the file to {FILE}-{SHA26}-{DATE}.tar.gz
-        # - Else, delete it, inform the client that it failed
         header = bytearray()
         cmd = bytearray((200).to_bytes(2, "big"))
         file_size_ = os.stat(archive).st_size
